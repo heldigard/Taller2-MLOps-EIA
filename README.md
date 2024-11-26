@@ -20,7 +20,7 @@ En este repositorio se encuentra los siguientes archivos:
 
 ## API
 
-En la carpeta 'api', se encuentra el código de la aplicación FastAPI que se encarga de implementar el endpoint /predict, para realizar la perdición.
+En la carpeta 'api', se encuentra el código de la aplicación FastAPI que se encarga de implementar el endpoint ```/predict```, para realizar la predición.
 
 ### Ejemplo
 
@@ -117,7 +117,9 @@ python3 service.py
 ```
 
 Server en EC2 corriendo:
+
 ![alt text](EC2_Running.png)
 
 Predicion funcionando:
+
 ![alt text](EC2_Predict.png)
