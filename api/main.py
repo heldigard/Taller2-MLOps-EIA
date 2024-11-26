@@ -11,13 +11,13 @@ async def predict(data: HeartData):
     pycaret_prediction = predict_pycaret(input_df)
     return {
         "sklearn_prediction": {
-            "label": int(sklearn_prediction["label"]),
-            "score": float(sklearn_prediction["score"])
+            "target": int(sklearn_prediction["label"]),
+            "score": float(sklearn_prediction["score"]),
         },
         "pycaret_prediction": {
-            "label": int(pycaret_prediction["label"]),
-            "score": float(pycaret_prediction["score"])
-        }
+            "target": int(pycaret_prediction["label"]),
+            "score": float(pycaret_prediction["score"]),
+        },
     }
 @app.get("/")
 def read_root():
