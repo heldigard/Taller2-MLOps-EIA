@@ -1,35 +1,34 @@
-from pycaret.classification import load_model, predict_model
 import joblib
+from pycaret.classification import load_model, predict_model
 import os
 from pydantic import BaseModel
 import pandas as pd
 
 # Construir las rutas de los archivos
 base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-model_path = os.path.join(base_path, "mejor_modelo_pipeline.joblib")
-scaler_path = os.path.join(base_path, "scaler.joblib")
-encoder_path = os.path.join(base_path, "encoder.joblib")
+sklearn_model_path = os.path.join(base_path, "mejor_modelo_pipeline.joblib")
+pycaret_model_path = os.path.join(base_path, "mejor_modelo_pipeline")
 
-# Load the model
-model = joblib.load(model_path)
-# Load the scaler and encoder
-scaler = joblib.load(scaler_path)
-encoder = joblib.load(encoder_path)
+# Cargar el modelo de scikit-learn
+sklearn_model = joblib.load(sklearn_model_path)
 
-def preprocess_data(data):
-    data_df = pd.DataFrame([data])
-    # Asegúrate de que los nombres de las características coincidan
-    expected_features = encoder.get_feature_names_out()
-    data_df = data_df.reindex(columns=expected_features, fill_value=0)
-    # Aplica el codificador a las columnas categóricas
-    data_df = encoder.transform(data_df)
-    # Aplica el escalador a los datos
-    data_df = scaler.transform(data_df)
-    return data_df
+# Cargar el modelo de pycaret
+pycaret_model = load_model(pycaret_model_path)
 
-def predict(data):
-    data_df = preprocess_data(data)
-    return predict_model(model, data=data_df)
+def predict_sklearn(data: pd.DataFrame):
+    prediction = sklearn_model.predict(data)
+    prediction_proba = sklearn_model.predict_proba(data)
+    return {
+        "label": int(prediction[0]),
+        "score": float(prediction_proba[0][1])
+    }
+
+def predict_pycaret(data: pd.DataFrame):
+    prediction = predict_model(pycaret_model, data=data)
+    return {
+        "label": prediction["prediction_label"][0],
+        "score": prediction["prediction_score"][0]
+    }
 
 class HeartData(BaseModel):
     age: int
